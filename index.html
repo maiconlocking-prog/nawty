@@ -31,19 +31,15 @@
             position: relative;
         }
 
-        /* ===== BACKGROUND CYBER ===== */
-        .background {
+        /* Canvas Matrix */
+        #matrix {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1920&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
             z-index: -3;
-            filter: brightness(0.45) contrast(1.2) saturate(1.3);
+            opacity: 0.55;
         }
 
         .overlay {
@@ -53,9 +49,9 @@
             width: 100%;
             height: 100%;
             background: 
-                linear-gradient(180deg, rgba(5,5,8,0.7) 0%, rgba(5,5,8,0.85) 60%, rgba(5,5,8,0.95) 100%),
-                radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 60%);
+                linear-gradient(180deg, rgba(5,5,8,0.65) 0%, rgba(5,5,8,0.8) 50%, rgba(5,5,8,0.9) 100%);
             z-index: -2;
+            pointer-events: none;
         }
 
         /* Scanlines */
@@ -69,27 +65,12 @@
                 0deg,
                 transparent,
                 transparent 2px,
-                rgba(0, 0, 0, 0.15) 2px,
-                rgba(0, 0, 0, 0.15) 4px
+                rgba(0, 0, 0, 0.12) 2px,
+                rgba(0, 0, 0, 0.12) 4px
             );
             pointer-events: none;
             z-index: 10;
-            opacity: 0.4;
-        }
-
-        /* Grid cyber sutil */
-        .grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-            pointer-events: none;
+            opacity: 0.35;
         }
 
         /* ===== CONTEÚDO ===== */
@@ -108,7 +89,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Foto de perfil com glow cyber */
         .profile-wrapper {
             position: relative;
             display: inline-block;
@@ -189,7 +169,6 @@
             font-size: 0.8rem;
         }
 
-        /* ===== LINKS ===== */
         .links {
             display: flex;
             flex-direction: column;
@@ -202,7 +181,7 @@
             justify-content: center;
             gap: 14px;
             padding: 15px 22px;
-            background: rgba(10, 10, 15, 0.7);
+            background: rgba(10, 10, 15, 0.75);
             border: 1px solid rgba(255, 215, 0, 0.25);
             border-radius: 4px;
             color: #e0e0e0;
@@ -213,7 +192,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            backdrop-filter: blur(6px);
+            backdrop-filter: blur(8px);
             clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
         }
 
@@ -229,7 +208,7 @@
         }
 
         .link-btn:hover {
-            background: rgba(255, 215, 0, 0.08);
+            background: rgba(255, 215, 0, 0.1);
             border-color: var(--neon);
             color: #fff;
             box-shadow: 
@@ -256,15 +235,9 @@
             margin-right: 22px;
         }
 
-        /* Discord especial */
         .discord-btn {
             cursor: pointer;
             user-select: none;
-        }
-
-        /* GitHub */
-        .github-btn i {
-            color: var(--neon);
         }
 
         .footer {
@@ -280,7 +253,6 @@
             opacity: 0.7;
         }
 
-        /* Glitch sutil no nome em hover */
         .name:hover {
             animation: glitch 0.4s linear;
         }
@@ -292,7 +264,6 @@
             100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
         }
 
-        /* Responsivo */
         @media (max-width: 480px) {
             .container {
                 padding: 32px 16px;
@@ -309,9 +280,8 @@
     </style>
 </head>
 <body>
-    <div class="background"></div>
+    <canvas id="matrix"></canvas>
     <div class="overlay"></div>
-    <div class="grid"></div>
     <div class="scanlines"></div>
 
     <div class="container">
@@ -342,7 +312,7 @@
                 <span>YOUTUBE</span>
             </a>
 
-            <a href="https://github.com/maiconlocking-prog" target="_blank" rel="noopener noreferrer" class="link-btn github-btn">
+            <a href="https://github.com/maiconlocking-prog" target="_blank" rel="noopener noreferrer" class="link-btn">
                 <i class="fab fa-github"></i>
                 <span>GITHUB</span>
             </a>
@@ -359,6 +329,53 @@
     </div>
 
     <script>
+        // ===== MATRIX CODE RAIN =====
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ<>[]{}|/\\=+-*%$#@!';
+        const fontSize = 14;
+        let columns = Math.floor(canvas.width / fontSize);
+        let drops = Array(columns).fill(1);
+
+        function draw() {
+            // Fade effect
+            ctx.fillStyle = 'rgba(5, 5, 8, 0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Bright head
+                if (Math.random() > 0.95) {
+                    ctx.fillStyle = '#FFF8C0';
+                } else {
+                    ctx.fillStyle = 'rgba(255, 215, 0, 0.75)';
+                }
+
+                ctx.fillText(text, x, y);
+
+                if (y > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+
+        setInterval(draw, 40);
+
+        // Discord copy
         function copyDiscord() {
             const username = "@excogitar";
             navigator.clipboard.writeText(username).then(() => {
