@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nawty // Cyber</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --neon: #FFD700;
+            --neon-dim: rgba(255, 215, 0, 0.4);
+            --bg-dark: #050508;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Share Tech Mono', monospace;
+            background: var(--bg-dark);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* ===== BACKGROUND CYBER ===== */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://images.unsplash.com/photo-1519608487953-e999c86e7455?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -3;
+            filter: brightness(0.45) contrast(1.2) saturate(1.3);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(180deg, rgba(5,5,8,0.7) 0%, rgba(5,5,8,0.85) 60%, rgba(5,5,8,0.95) 100%),
+                radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 60%);
+            z-index: -2;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0, 0, 0, 0.15) 2px,
+                rgba(0, 0, 0, 0.15) 4px
+            );
+            pointer-events: none;
+            z-index: 10;
+            opacity: 0.4;
+        }
+
+        /* Grid cyber sutil */
+        .grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ===== CONTEÚDO ===== */
+        .container {
+            width: 100%;
+            max-width: 440px;
+            padding: 40px 24px;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Foto de perfil com glow cyber */
+        .profile-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        .profile-pic {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon);
+            box-shadow: 
+                0 0 15px var(--neon-dim),
+                0 0 40px rgba(255, 215, 0, 0.25),
+                inset 0 0 20px rgba(0,0,0,0.5);
+            transition: all 0.4s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-wrapper::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            right: -8px;
+            bottom: -8px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            animation: pulseRing 3s infinite;
+        }
+
+        @keyframes pulseRing {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.08); opacity: 0.2; }
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.06);
+            box-shadow: 
+                0 0 25px var(--neon),
+                0 0 60px rgba(255, 215, 0, 0.4);
+        }
+
+        .name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.4rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            margin-bottom: 6px;
+            color: #fff;
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.5),
+                0 0 30px rgba(255, 215, 0, 0.2);
+            text-transform: uppercase;
+        }
+
+        .name span {
+            color: var(--neon);
+        }
+
+        .bio {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 40px;
+            letter-spacing: 1px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .bio::before,
+        .bio::after {
+            content: '//';
+            color: var(--neon);
+            opacity: 0.6;
+            margin: 0 8px;
+            font-size: 0.8rem;
+        }
+
+        /* ===== LINKS ===== */
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            padding: 15px 22px;
+            background: rgba(10, 10, 15, 0.7);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            border-radius: 4px;
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(6px);
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+        }
+
+        .link-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.12), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .link-btn:hover {
+            background: rgba(255, 215, 0, 0.08);
+            border-color: var(--neon);
+            color: #fff;
+            box-shadow: 
+                0 0 15px rgba(255, 215, 0, 0.25),
+                inset 0 0 20px rgba(255, 215, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .link-btn:hover::before {
+            left: 100%;
+        }
+
+        .link-btn i {
+            font-size: 1.2rem;
+            color: var(--neon);
+            width: 22px;
+            text-align: center;
+            text-shadow: 0 0 8px var(--neon-dim);
+        }
+
+        .link-btn span {
+            flex: 1;
+            text-align: center;
+            margin-right: 22px;
+        }
+
+        /* Discord especial */
+        .discord-btn {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* GitHub */
+        .github-btn i {
+            color: var(--neon);
+        }
+
+        .footer {
+            margin-top: 48px;
+            font-size: 0.75rem;
+            color: #555;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .footer span {
+            color: var(--neon);
+            opacity: 0.7;
+        }
+
+        /* Glitch sutil no nome em hover */
+        .name:hover {
+            animation: glitch 0.4s linear;
+        }
+
+        @keyframes glitch {
+            0% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+            25% { text-shadow: -2px 0 #ff00ff, 2px 0 #00ffff; }
+            50% { text-shadow: 2px 0 #ff00ff, -2px 0 #00ffff; }
+            100% { text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+        }
+
+        /* Responsivo */
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 16px;
+            }
+            .name {
+                font-size: 1.9rem;
+                letter-spacing: 2px;
+            }
+            .profile-pic {
+                width: 110px;
+                height: 110px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="overlay"></div>
+    <div class="grid"></div>
+    <div class="scanlines"></div>
+
+    <div class="container">
+        <div class="profile-wrapper">
+            <!-- TROQUE A SRC PELA SUA FOTO DE PERFIL -->
+            <img 
+                src="https://ui-avatars.com/api/?name=Nawty&background=0a0a0f&color=FFD700&size=260&bold=true&font-size=0.38" 
+                alt="Nawty" 
+                class="profile-pic"
+            >
+        </div>
+
+        <h1 class="name">NAW<span>TY</span></h1>
+        <p class="bio">seja quem você precisa ser.</p>
+
+        <div class="links">
+            <a href="https://instagram.com/Exnawty" target="_blank" rel="noopener noreferrer" class="link-btn">
+                <i class="fab fa-instagram"></i>
+                <span>INSTAGRAM</span>
+            </a>
+
+            <a href="https://tiktok.com/@excogitar" target="_blank" rel="noopener noreferrer" class="link-btn">
+                <i class="fab fa-tiktok"></i>
+                <span>TIKTOK</span>
+            </a>
+
+            <a href="https://youtube.com/@NawtySoft" target="_blank" rel="noopener noreferrer" class="link-btn">
+                <i class="fab fa-youtube"></i>
+                <span>YOUTUBE</span>
+            </a>
+
+            <a href="https://github.com/maiconlocking-prog" target="_blank" rel="noopener noreferrer" class="link-btn github-btn">
+                <i class="fab fa-github"></i>
+                <span>GITHUB</span>
+            </a>
+
+            <div class="link-btn discord-btn" onclick="copyDiscord()" title="Clique para copiar">
+                <i class="fab fa-discord"></i>
+                <span id="discordText">DISCORD • @excogitar</span>
+            </div>
+        </div>
+
+        <div class="footer">
+            <span>//</span> NAWTY <span>//</span>
+        </div>
+    </div>
+
+    <script>
+        function copyDiscord() {
+            const username = "@excogitar";
+            navigator.clipboard.writeText(username).then(() => {
+                const el = document.getElementById("discordText");
+                el.textContent = "COPIADO ✓";
+                setTimeout(() => {
+                    el.textContent = "DISCORD • @excogitar";
+                }, 1800);
+            }).catch(() => {
+                alert("Discord: @excogitar");
+            });
+        }
+    </script>
+</body>
+</html>
